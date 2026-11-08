@@ -16,7 +16,7 @@ public class Expresiones {
         return op.equals("*") ? "×" : op.equals("/") ? "÷" : op;
     }
 
-    /** Convierte una expresión infija (ya separada en símbolos) a posfija. */
+
     public static String[] infijaAPosfija(String[] simbolos, boolean traza) {
         Pila<String> operadores = new Pila<>();
         String[] salida = new String[simbolos.length];
@@ -51,7 +51,7 @@ public class Expresiones {
         return resultado;
     }
 
-    /** Evalúa una expresión posfija cuyos operandos ya son números. */
+
     public static double evaluarPosfija(String[] posfija, boolean traza) {
         Pila<Double> pila = new Pila<>();
         if (traza) System.out.printf("%-10s %-44s %s%n", "Elemento", "Operación", "Pila (tope → fondo)");
