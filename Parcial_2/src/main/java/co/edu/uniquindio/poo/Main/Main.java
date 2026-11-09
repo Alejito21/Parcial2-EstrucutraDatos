@@ -81,46 +81,20 @@ public class Main {
 
         System.out.println("\nPila final (cima → fondo): " + pila);
 
-        // Se leen los valores de las 4 cajas finales (cima → fondo) sin destruir la pila:
-        // se pasan a una auxiliar y luego se devuelven.
-        int[] v = new int[4];
-        Pila<Caja> aux = new Pila<>();
-        for (int i = 0; i < 4; i++) {
-            Caja c = pila.desapilar();
-            v[i] = c.getValor();
-            aux.apilar(c);
-        }
-        while (!aux.estaVacia()) pila.apilar(aux.desapilar());
-
-        double A = v[0];               // valor de la primera caja
-        double B = v[1] / A;           // segunda caja / A (con decimales)
-        double C = v[2] + A;           // tercera caja + A
-        double D = (v[3] + C) * A;     // (cuarta caja + C) * A
-        System.out.println("A = " + Expresiones.num(A) + ", B = " + Expresiones.num(B)
-                + ", C = " + Expresiones.num(C) + ", D = " + Expresiones.num(D));
+        // A, B, C, D con las 4 cajas finales (cima → fondo); la pila no se modifica.
+        double[] abcd = Expresiones.calcularVariables(pila);
+        System.out.println("A = " + Expresiones.num(abcd[0]) + ", B = " + Expresiones.num(abcd[1])
+                + ", C = " + Expresiones.num(abcd[2]) + ", D = " + Expresiones.num(abcd[3]));
+        verificar("pila intacta tras leer A..D", pila.toString(), "C1:2 → C6:9 → C2:4 → C5:3");
 
         System.out.println("\nConversión de (A + B) × C − (A − B) × D a posfija:");
-        String[] infija = {"(", "A", "+", "B", ")", "*", "C", "-", "(", "A", "-", "B", ")", "*", "D"};
-        String[] posfija = Expresiones.infijaAPosfija(infija, true);
-        StringBuilder sb = new StringBuilder();
-        for (String s : posfija) sb.append(s).append(' ');
-        System.out.println("Posfija: " + sb.toString().trim());
-        verificar("posfija", sb.toString().trim(), "A B + C * A B - D * -");
+        String[] posfija = Expresiones.infijaAPosfija(Expresiones.EXPRESION_INFIJA, true);
+        System.out.println("Posfija: " + Expresiones.unir(posfija));
+        verificar("posfija", Expresiones.unir(posfija), "A B + C * A B - D * -");
 
         // Reemplazo de variables por valores
-        String[] valores = new String[posfija.length];
-        for (int i = 0; i < posfija.length; i++) {
-            switch (posfija[i]) {
-                case "A": valores[i] = Expresiones.num(A); break;
-                case "B": valores[i] = Expresiones.num(B); break;
-                case "C": valores[i] = Expresiones.num(C); break;
-                case "D": valores[i] = Expresiones.num(D); break;
-                default: valores[i] = posfija[i];
-            }
-        }
-        StringBuilder sv = new StringBuilder();
-        for (String s : valores) sv.append(s).append(' ');
-        System.out.println("Posfija con valores: " + sv.toString().trim());
+        String[] valores = Expresiones.reemplazarVariables(posfija, abcd);
+        System.out.println("Posfija con valores: " + Expresiones.unir(valores));
 
         System.out.println("\nEvaluación de la posfija con valores:");
         double resultado = Expresiones.evaluarPosfija(valores, true);

@@ -102,6 +102,56 @@ public class Expresiones {
         return pila.desapilar();
     }
 
+    // ---------------- Datos del enunciado ----------------
+
+    // (A + B) × C − (A − B) × D separada en símbolos.
+    public static final String[] EXPRESION_INFIJA =
+            {"(", "A", "+", "B", ")", "*", "C", "-", "(", "A", "-", "B", ")", "*", "D"};
+
+    // Calcula {A, B, C, D} con los valores de las 4 primeras cajas (cima -> fondo):
+    //   A = valor 1ª caja        B = valor 2ª caja / A (con decimales)
+    //   C = valor 3ª caja + A    D = (valor 4ª caja + C) * A
+    // La pila NO se modifica: las cajas se pasan a una auxiliar y se devuelven.
+    public static double[] calcularVariables(Pila<Caja> pila) {
+        if (pila.tamanio() < 4) throw new IllegalArgumentException("La pila debe tener al menos 4 cajas");
+        int[] v = new int[4];
+        Pila<Caja> aux = new Pila<>();
+        for (int i = 0; i < 4; i++) {
+            Caja c = pila.desapilar();
+            v[i] = c.getValor();
+            aux.apilar(c);
+        }
+        while (!aux.estaVacia()) pila.apilar(aux.desapilar());
+
+        double a = v[0];
+        double b = v[1] / a;
+        double c = v[2] + a;
+        double d = (v[3] + c) * a;
+        return new double[]{a, b, c, d};
+    }
+
+    // Reemplaza las variables A, B, C, D de la posfija por sus valores.
+    public static String[] reemplazarVariables(String[] posfija, double[] abcd) {
+        String[] valores = new String[posfija.length];
+        for (int i = 0; i < posfija.length; i++) {
+            switch (posfija[i]) {
+                case "A": valores[i] = num(abcd[0]); break;
+                case "B": valores[i] = num(abcd[1]); break;
+                case "C": valores[i] = num(abcd[2]); break;
+                case "D": valores[i] = num(abcd[3]); break;
+                default: valores[i] = posfija[i];
+            }
+        }
+        return valores;
+    }
+
+    // Une todos los símbolos con espacios (ej: "A B + C *").
+    public static String unir(String[] simbolos) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : simbolos) sb.append(s).append(' ');
+        return sb.toString().trim();
+    }
+
     // Une los primeros n símbolos de la salida para mostrarlos en la tabla.
     private static String unir(String[] v, int n) {
         StringBuilder sb = new StringBuilder();

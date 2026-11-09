@@ -4,7 +4,9 @@ package co.edu.uniquindio.poo.Model.Estructuras;
 // Pila genérica propia (LIFO: el último en entrar es el primero en salir),
 // implementada con nodos enlazados. La "cima" apunta al último elemento apilado.
 // Todas las operaciones básicas son O(1).
-public class Pila<T> {
+// Implementa Iterable para poder recorrerla (tope -> fondo) sin desapilar;
+// se usa en la interfaz gráfica para mostrar su contenido.
+public class Pila<T> implements Iterable<T> {
 
     // Nodo interno: guarda el dato y la referencia al nodo que está debajo.
     private static class Nodo<T> {
@@ -46,6 +48,27 @@ public class Pila<T> {
 
     public int tamanio() {
         return tamanio;
+    }
+
+    // Recorre los elementos desde el tope hasta el fondo, sin sacarlos de la pila.
+    @Override
+    public java.util.Iterator<T> iterator() {
+        return new java.util.Iterator<T>() {
+            private Nodo<T> actual = cima;
+
+            @Override
+            public boolean hasNext() {
+                return actual != null;
+            }
+
+            @Override
+            public T next() {
+                if (actual == null) throw new java.util.NoSuchElementException();
+                T dato = actual.dato;
+                actual = actual.siguiente;
+                return dato;
+            }
+        };
     }
 
     // Muestra el contenido desde el tope hasta el fondo, separado por " → ".

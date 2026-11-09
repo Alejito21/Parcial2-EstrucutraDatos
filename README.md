@@ -9,7 +9,9 @@ Proyecto Java (Maven) con las soluciones del parcial. Todas las estructuras son 
 
 ```
 Parcial_2/src/main/java/co/edu/uniquindio/poo/
-├── Main/Main.java                 Ejecuta los datos de prueba y verifica resultados
+├── Main/Main.java                 Consola: ejecuta los datos de prueba y verifica resultados
+├── Main/MainGUI.java              Interfaz gráfica (Swing)
+├── Vista/                         Ventana con una pestaña por punto + PanelArbol (dibujo de árboles)
 └── Model/
     ├── Estructuras/  Pila, Cola   Estructuras propias
     │                 NodoArbol, DibujoArbol (dibujo en texto de cualquier árbol)
@@ -23,15 +25,30 @@ Parcial_2/src/main/java/co/edu/uniquindio/poo/
 
 ## Ejecución
 
-Desde IntelliJ: ejecutar `co.edu.uniquindio.poo.Main.Main`.
+Desde IntelliJ:
+- `co.edu.uniquindio.poo.Main.MainGUI`: interfaz gráfica.
+- `co.edu.uniquindio.poo.Main.Main`: consola con verificaciones automáticas.
 
 Desde la terminal (requiere JDK 24 o superior):
 
 ```bash
 cd Parcial_2
 javac -encoding UTF-8 -d out $(find src -name '*.java')
-java -cp out co.edu.uniquindio.poo.Main.Main
+java -cp out co.edu.uniquindio.poo.Main.MainGUI   # interfaz gráfica
+java -cp out co.edu.uniquindio.poo.Main.Main      # consola
 ```
+
+## Interfaz gráfica
+
+Cada pestaña arranca con los datos del enunciado cargados y permite probar otros casos:
+
+| Pestaña | Qué permite |
+|---|---|
+| 1. Cajas y expresión | Apilar cajas, `retirarCaja`, prueba completa C3 → C4 → C7 y tablas de conversión/evaluación de la expresión |
+| 2. Historial | Apilar acciones y `obtenerSegmento(inicio, fin)` mostrando la pila original y el resultado |
+| 3. Paquetes | Encolar paquetes, `seleccionarPaquetes(capacidad)`: evaluación de cada paquete, seleccionados, pendientes y capacidad restante |
+| 4. ABB | Árbol dibujado, insertar/eliminar, `contarEquiposEnRango` y los cuatro recorridos |
+| 5. AVL y Rojo-Negro | Construcción, eliminación y Rojo-Negro paso a paso: cada paso con su descripción y el árbol dibujado (FE en cada nodo del AVL, colores en el Rojo-Negro) |
 
 ## Punto 5: convenciones
 
