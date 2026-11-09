@@ -1,5 +1,9 @@
 package co.edu.uniquindio.poo.Model.Punto5;
 
+// DOCUMENTACIÓN
+// Nodo del árbol Rojo-Negro (Punto 5c). Todo nodo nuevo nace ROJO.
+// Guarda referencia al padre porque el balanceo necesita subir por el árbol
+// (consultar padre, abuelo y tío).
 public class NodoRN {
     String clave;
     boolean rojo = true;

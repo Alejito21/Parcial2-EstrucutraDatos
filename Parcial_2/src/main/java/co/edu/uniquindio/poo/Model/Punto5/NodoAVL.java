@@ -1,5 +1,8 @@
 package co.edu.uniquindio.poo.Model.Punto5;
 
+// DOCUMENTACIÓN
+// Nodo del árbol AVL (Punto 5). La clave es una palabra (orden alfabético).
+// 'altura' = número de niveles del subárbol que empieza en este nodo (una hoja tiene 1).
 public class NodoAVL {
     String clave;
     NodoAVL izquierdo;
