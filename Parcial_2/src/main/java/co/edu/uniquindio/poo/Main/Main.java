@@ -9,6 +9,9 @@ import co.edu.uniquindio.poo.Model.Punto2.Historial;
 import co.edu.uniquindio.poo.Model.Punto3.Paquete;
 import co.edu.uniquindio.poo.Model.Punto3.Ruta;
 import co.edu.uniquindio.poo.Model.Punto4.ArbolABB;
+import co.edu.uniquindio.poo.Model.Punto5.ArbolAVL;
+import co.edu.uniquindio.poo.Model.Punto5.ArbolRN;
+import co.edu.uniquindio.poo.Model.Punto5.Paso;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
@@ -38,6 +41,7 @@ public class Main {
         punto2();
         punto3();
         punto4();
+        punto5();
         System.out.println("\n" + (fallos == 0 ? "TODAS LAS VERIFICACIONES PASARON" : "VERIFICACIONES FALLIDAS: " + fallos));
     }
 
@@ -225,5 +229,69 @@ public class Main {
         verificar("nueva raíz", abb.getRaiz().getClave(), 22);
         verificar("inorden tras eliminar", abb.inorden(), "6 12 13 16 20 22 43 44 47 50 52 60");
         verificar("preorden tras eliminar", abb.preorden(), "22 20 16 6 13 12 52 47 43 44 50 60");
+    }
+
+    // ------------------------------------------------------------------
+    // PUNTO 5: AVL (construcción + eliminación de "cine") y Rojo-Negro
+    // ------------------------------------------------------------------
+    public static final String[] PALABRAS_AVL = {"alma", "beso", "azul", "cine", "eco", "dedo", "bota",
+            "hilo", "lago", "isla", "nube", "pato", "oro", "mapa", "gato"};
+
+    // Imprime cada paso numerado: descripción + árbol dibujado.
+    private static void imprimirPasos(Cola<? extends Paso<?>> pasos) {
+        int i = 1;
+        for (Paso<?> p : pasos) {
+            System.out.println("\nPaso " + (i++) + ". " + p);
+        }
+    }
+
+    private static void punto5() {
+        titulo("PUNTO 5 - Árboles AVL y Rojo-Negro");
+        System.out.println("Factor de equilibrio: FE = altura(derecho) - altura(izquierdo)");
+        System.out.println("Dibujo acostado: la raíz a la izquierda, subárbol derecho arriba, izquierdo abajo.");
+
+        // a) Construcción del AVL
+        System.out.println("\n---------- a) Construcción del AVL ----------");
+        ArbolAVL avl = new ArbolAVL();
+        for (String p : PALABRAS_AVL) avl.insertar(p);
+        imprimirPasos(avl.getPasos());
+        System.out.println("Inorden:   " + avl.inorden());
+        System.out.println("Preorden:  " + avl.preorden());
+        System.out.println("Postorden: " + avl.postorden());
+        System.out.println("Amplitud:  " + avl.amplitud());
+        verificar("el árbol cumple las propiedades AVL", avl.esAVL(), true);
+        verificar("inorden en orden alfabético", avl.inorden().toString(),
+                "alma, azul, beso, bota, cine, dedo, eco, gato, hilo, isla, lago, mapa, nube, oro, pato");
+        verificar("preorden del AVL", avl.preorden().toString(),
+                "cine, azul, alma, beso, bota, isla, eco, dedo, hilo, gato, nube, lago, mapa, pato, oro");
+
+        // b) Eliminación de "cine"
+        System.out.println("\n---------- b) Eliminación de \"cine\" ----------");
+        avl.limpiarPasos();
+        avl.eliminar("cine");
+        imprimirPasos(avl.getPasos());
+        System.out.println("Inorden:   " + avl.inorden());
+        System.out.println("Preorden:  " + avl.preorden());
+        System.out.println("Postorden: " + avl.postorden());
+        System.out.println("Amplitud:  " + avl.amplitud());
+        verificar("\"cine\" ya no está", avl.buscar("cine"), false);
+        verificar("sigue cumpliendo las propiedades AVL", avl.esAVL(), true);
+        verificar("postorden tras eliminar", avl.postorden().toString(),
+                "alma, beso, azul, dedo, gato, hilo, eco, bota, mapa, lago, oro, pato, nube, isla");
+
+        // c) Rojo-Negro con el postorden del AVL resultante
+        Cola<String> postorden = avl.postorden();
+        System.out.println("\n---------- c) Árbol Rojo-Negro ----------");
+        System.out.println("Se insertan, en este orden, las palabras del postorden del AVL final:");
+        System.out.println(postorden);
+        ArbolRN rn = new ArbolRN();
+        for (String p : postorden) rn.insertar(p);
+        imprimirPasos(rn.getPasos());
+        System.out.println("Inorden:  " + rn.inorden());
+        System.out.println("Preorden: " + rn.preorden());
+        System.out.println("Altura negra: " + rn.getAlturaNegra());
+        verificar("el árbol cumple las propiedades Rojo-Negro", rn.esRojoNegro(), true);
+        verificar("preorden del Rojo-Negro", rn.preorden().toString(),
+                "dedo [N], azul [N], alma [N], beso [N], bota [R], lago [N], gato [R], eco [N], hilo [N], isla [R], oro [R], mapa [N], nube [R], pato [N]");
     }
 }

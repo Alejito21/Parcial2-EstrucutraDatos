@@ -4,7 +4,9 @@ package co.edu.uniquindio.poo.Model.Estructuras;
 // Cola genérica propia (FIFO: el primero en entrar es el primero en salir),
 // implementada con nodos enlazados. Se guarda referencia al frente (por donde
 // se sale) y al fin (por donde se entra) para que encolar y desencolar sean O(1).
-public class Cola<T> {
+// Implementa Iterable para poder recorrerla (frente -> final) con un for-each sin
+// modificarla; se usa para mostrar los pasos de los árboles del Punto 5.
+public class Cola<T> implements Iterable<T> {
 
     // Nodo interno: guarda el dato y la referencia al siguiente en la fila.
     private static class Nodo<T> {
@@ -53,6 +55,27 @@ public class Cola<T> {
 
     public int tamanio() {
         return tamanio;
+    }
+
+    // Recorre los elementos desde el frente hasta el final, sin sacarlos de la cola.
+    @Override
+    public java.util.Iterator<T> iterator() {
+        return new java.util.Iterator<T>() {
+            private Nodo<T> actual = frente;
+
+            @Override
+            public boolean hasNext() {
+                return actual != null;
+            }
+
+            @Override
+            public T next() {
+                if (actual == null) throw new java.util.NoSuchElementException();
+                T dato = actual.dato;
+                actual = actual.siguiente;
+                return dato;
+            }
+        };
     }
 
     // Muestra el contenido desde el frente hasta el final, separado por comas.
